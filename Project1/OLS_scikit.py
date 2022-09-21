@@ -17,7 +17,7 @@ import Calculate_MSE_R2 as error
 
 # Generate dataset with n observations
 
-n = 50
+n = 100
 
 x1 = np.random.uniform(0,1,n)
 x2 = np.random.uniform(0,1,n)
@@ -55,7 +55,7 @@ y_train = (y_train-np.mean(y_train))/np.std(y_train)
 y_test= (y_test-np.mean(y_test))/np.std(y_test)
 
 #Define maximal model complexity
-maxdegree= 5
+maxdegree= 10
 
 #Initialize before looping:
 TestError = np.zeros(maxdegree+1)
@@ -141,4 +141,26 @@ plt.xticks(np.arange(0, 1, step=1))  # Set label locations.
 plt.xticks(np.arange(21), [r'$\beta_0$', r'$\beta_1$', r'$\beta_2$', \
            r'$\beta_3$', r'$\beta_4$', r'$\beta_5$', \
            r'$\beta_6$', r'$\beta_7$', r'$\beta_8$', \
-           
+           r'$\beta_9$', r'$\beta_{10}$', r'$\beta_{11}$', \
+           r'$\beta_{12}$', r'$\beta_{13}$', r'$\beta_{14}$', \
+           r'$\beta_{15}$', r'$\beta_{16}$', r'$\beta_{17}$', \
+           r'$\beta_{18}$', r'$\beta_{19}$', r'$\beta_{20}$',r'$\beta_{21}$'\
+           ], rotation=45)  # Set text labels.
+
+
+plt.ylabel("Optimal Beta - predictor value")
+plt.legend()
+plt.savefig("Results/Optimal_predictor.png",dpi=150)
+
+
+
+
+
+
+
+
+
+
+
+
+
