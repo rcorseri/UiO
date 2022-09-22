@@ -19,15 +19,17 @@ import Calculate_MSE_R2 as error
 maxdegree= 5
 
 # Make data set.
-n = 70
+n = 75
 
 
 x1 = np.random.uniform(0,1,n)
 x2 = np.random.uniform(0,1,n)
 
 
-y = FF.FrankeFunction(x1,x2)#+np.random.normal(0,1,n)
+y = FF.FrankeFunction(x1,x2)
 
+#Add normally distributed noise
+y = y + np.random.normal(0,0.1,y.shape)
 
 x1 = np.array(x1).reshape(n,1)
 x2 = np.array(x2).reshape(n,1)
