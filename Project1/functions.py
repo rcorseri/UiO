@@ -13,19 +13,6 @@ from imageio import imread
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 
-def ScaleData(x_train, x_test, y_train, y_test):
-    scaler = StandardScaler()
-    scaler.fit(x_train)
-    x_train_scaled = scaler.transform(x_train)
-    x_test_scaled = scaler.transform(x_test)
-
-    scaler.fit(y_test)
-    y_test_scaled = scaler.transform(y_test)
-    scaler.fit(y_train)
-    y_train_scaled = scaler.transform(y_train)
-    
-    return x_train_scaled, x_test_scaled, y_train_scaled, y_test_scaled
-
 
         
 def LinReg(X_train, X_test, y_train, y_test):

@@ -10,16 +10,16 @@ from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.pipeline import Pipeline
 
-from functions import ScaleData, LinReg
+from functions import LinReg
 from DesignMatrix import DesignMatrix
 import FrankeFunction as FF
 import Calculate_MSE_R2 as error
 
 #polynomial degree up to 10
-maxdegree= 6
+maxdegree= 5
 
 # Make data set.
-n = 500
+n = 70
 
 
 x1 = np.random.uniform(0,1,n)
@@ -42,52 +42,55 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
 
     
 #Scaling
-#x_train, x_test, y_train, y_test = ScaleData(x_train, x_test, y_train, y_test)
-y_train_mean = np.mean(y_train)
-x_train_mean = np.mean(x_train)
-x_train = x_train - x_train_mean
-y_train = y_train - y_train_mean
-x_test = x_test - x_train_mean
-y_test = y_test - y_train_mean
+#y_train_mean = np.mean(y_train)
+#x_train_mean = np.mean(x_train)
+#x_train = x_train - x_train_mean
+#y_train = y_train - y_train_mean
+#x_test = x_test - x_train_mean
+#y_test = y_test - y_train_mean
 
 
-#Initialization
+
 #Initialize before looping:
-TestError = np.zeros(maxdegree+1)
-TrainError = np.zeros(maxdegree+1)
-TestR2 = np.zeros(maxdegree+1)
-TrainR2 = np.zeros(maxdegree+1)
-polydegree = np.zeros(maxdegree+1)
-predictor = []
 
+
+TestError = np.zeros(maxdegree)
+TrainError = np.zeros(maxdegree)
+TestR2 = np.zeros(maxdegree)
+TrainR2 = np.zeros(maxdegree)
+polydegree = np.zeros(maxdegree)
+predictor =[]
 
 #OLS
-for degree in range(0,maxdegree+1):
+for degree in range(maxdegree):
     
-    if degree ==0:
-        
-        Beta = 0
-        y_pred = np.mean(y_test)
-        y_fit = np.mean(y_train)
-        
+  
+    X_train = DesignMatrix(x_train[:,0],x_train[:,1],degree+1)
+    X_test = DesignMatrix(x_test[:,0],x_test[:,1],degree+1)
+    y_fit, y_pred, Beta = LinReg(X_train, X_test, y_train, y_test)
     
-    else:
-        X_train = DesignMatrix(x_train[:,0],x_train[:,1],degree)
-        X_test = DesignMatrix(x_test[:,0],x_test[:,1],degree)
-        y_fit, y_pred, Beta = LinReg(X_train, X_test, y_train, y_test)
+    
 
     predictor=np.append(predictor,Beta)
-    polydegree[degree] = degree
+    polydegree[degree] = degree+1
+    
     TestError[degree] = error.MSE(y_test,y_pred)
-    TrainError[degree] = error.MSE(y_train,y_fit)
+    TrainError[degree] = error.MSE(y_train ,y_fit)
     TestR2[degree] = error.R2(y_test,y_pred)
     TrainR2[degree] = error.R2(y_train,y_fit)
+        
+    #With rescaling
+#    TestError[degree] = error.MSE(y_test + y_train_mean,y_pred + y_train_mean)
+#    TrainError[degree] = error.MSE(y_train + y_train_mean,y_fit + y_train_mean)
+#    TestR2[degree] = error.R2(y_test + y_train_mean,y_pred + y_train_mean)
+#    TrainR2[degree] = error.R2(y_train + y_train_mean,y_fit + y_train_mean)
+    
     
     #Display regression results for each polynomial degree
     print("\nModel complexity:")
-    print(degree)
+    print(degree+1)
     print("\nOptimal estimator Beta")
-    print(Beta)
+    print(Beta.shape)
     print("\nTraining error")
     print("MSE =",error.MSE(y_train,y_fit))
     print("R2 =",error.R2(y_train,y_fit))
@@ -102,7 +105,7 @@ for degree in range(0,maxdegree+1):
 #MSE
 plt.plot(polydegree, TestError,'r-o' , label='Test MSError')
 plt.plot(polydegree, TrainError,'b-o', label='Train MSError')
-
+plt.xticks(np.arange(1, maxdegree+1, step=1))  # Set label locations.
 plt.xlabel("model complexity (degree)")
 plt.ylabel("Mean squared error")
 plt.legend()
@@ -112,7 +115,7 @@ plt.show()
 #R2 score
 plt.plot(polydegree, TestR2,'r-d', label='Test R2')
 plt.plot(polydegree, TrainR2, 'b-d',label='Train R2')
-plt.xticks(np.arange(1, 6, step=1))  # Set label locations.
+plt.xticks(np.arange(1, maxdegree+1, step=1))  # Set label locations.
 plt.xlabel("model complexity (degree)")
 plt.ylabel("R2 score")
 plt.legend()
@@ -122,12 +125,12 @@ plt.show()
 #Beta coefficients
 print(predictor.shape)
 
-plt.plot(predictor[0],'md-' , label='degree=0')
-plt.plot(predictor[1:4],'r-*' , label='degree=1')
-plt.plot(predictor[4:10],'b-*' , label='degree=2')
-plt.plot(predictor[10:20],'g*-' , label='degree=3')
-plt.plot(predictor[20:35],'y*-' , label='degree=4')
-plt.plot(predictor[35:56],'k*-' , label='degree=5')
+plt.plot(predictor[0:3],'md-' , label='degree=1')
+plt.plot(predictor[3:9],'r-*' , label='degree=2')
+plt.plot(predictor[9:19],'b-*' , label='degree=3')
+plt.plot(predictor[19:34],'g*-' , label='degree=4')
+plt.plot(predictor[34:55],'y*-' , label='degree=5')
+
 
 
 locs, labels = plt.xticks()  # Get the current locations and labels.
