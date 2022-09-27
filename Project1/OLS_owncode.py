@@ -19,7 +19,7 @@ import Calculate_MSE_R2 as error
 maxdegree= 5
 
 # Make data set.
-n = 75
+n = 100
 
 
 x1 = np.random.uniform(0,1,n)

@@ -52,4 +52,6 @@ for degree in range(maxdegree):
 
 plt.plot(polydegree, error, label='Error')
 plt.plot(polydegree, bias, label='bias')
-plt.plot(polydegree, variance,
+plt.plot(polydegree, variance, label='Variance')
+plt.legend()
+plt.show()

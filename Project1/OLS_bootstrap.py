@@ -16,19 +16,16 @@ from DesignMatrix import DesignMatrix
 import FrankeFunction as FF
 
 
-#polynomial degree up to 7
+#Model complexity - polynomial degree up to 7
 maxdegree= 5
 
 #Number of bootstraps
-n_bootstraps = 45
+n_bootstraps = 50
 
 # Make data set.
 n = 100
-
 x1 = np.random.uniform(0,1,n)
 x2 = np.random.uniform(0,1,n)
-
-
 y = FF.FrankeFunction(x1,x2)
 
 #Add normally distributed noise
@@ -36,11 +33,7 @@ y = FF.FrankeFunction(x1,x2)
 
 x1 = np.array(x1).reshape(n,1)
 x2 = np.array(x2).reshape(n,1)
-
 x = np.hstack((x1,x2)).reshape(n,2)
-
-#Design matrix
-
 
 #Split train (80%) and test(20%) data before looping on polynomial degree
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
@@ -57,8 +50,6 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
 
 
 #Initialize before looping:
-
-
 TestError = np.zeros(maxdegree)
 TrainError = np.zeros(maxdegree)
 TestR2 = np.zeros(maxdegree)
@@ -71,11 +62,10 @@ bias = np.zeros(maxdegree)
 variance = np.zeros(maxdegree)
 polydegree = np.zeros(maxdegree)
 
-y_test.shape
 
 #Initialize bootstrap matrice
 y_pred = np.empty((y_test.shape[0],n_bootstraps))
-Y_test = np.empty((y_test.shape[0],n_bootstraps))
+#Y_test = np.empty((y_test.shape[0],n_bootstraps))
 
 
 
@@ -88,9 +78,7 @@ for degree in range(maxdegree):
         X_train = DesignMatrix(x_[:,0],x_[:,1],degree+1)
         X_test = DesignMatrix(x_test[:,0],x_test[:,1],degree+1)
         y_fit, y_pred[:,i], Beta = LinReg(X_train, X_test, y_, y_test)
-        
-        
-    
+                
     y_test = np.reshape(y_test, (len(y_test),1))
     predictor=np.append(predictor,Beta)
     polydegree[degree] = degree+1
@@ -106,9 +94,6 @@ for degree in range(maxdegree):
 #    print('Var:', variance)
 #    print('{} >= {} + {} = {}'.format(error, bias, variance, bias+variance))
     
-
-
-
 
 #####Plots####
     

@@ -23,21 +23,15 @@ n = 100
 
 x1 = np.random.uniform(0,1,n)
 x2 = np.random.uniform(0,1,n)
-#x1 = np.linspace(0, 1, n)
-#x2 = np.linspace(0, 1, n)
-
-
-
 y = FF.FrankeFunction(x1,x2)
+
 #add normally distributed noise N(0,1)
 #y = FF.FrankeFunction(x1,x2)+np.random.normal(0,0.1,n)
 
 
 x1 = np.array(x1).reshape(n,1)
 x2 = np.array(x2).reshape(n,1)
-
 x = np.hstack((x1,x2)).reshape(n,2)
-
 y = np.array(y).reshape(n,1)
 
 
@@ -51,12 +45,12 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
 #x_test = scaler.fit_transform(x_test)
 
 #Scaling manual
-y_train_mean = np.mean(y_train)
-x_train_mean = np.mean(x_train)
-x_train = x_train - x_train_mean
-y_train = y_train - y_train_mean
-x_test = x_test - x_train_mean
-y_test = y_test - y_train_mean
+#y_train_mean = np.mean(y_train)
+#x_train_mean = np.mean(x_train)
+#x_train = x_train - x_train_mean
+#y_train = y_train - y_train_mean
+#x_test = x_test - x_train_mean
+#y_test = y_test - y_train_mean
 
 
 #Initialize before looping:
@@ -77,7 +71,6 @@ for degree in range(maxdegree):
     Beta = model.named_steps['linear'].coef_
     predictor=np.append(predictor,Beta)
 
-
     y_fit = model.predict(x_train)
     y_pred = model.predict(x_test) 
     
@@ -93,7 +86,7 @@ for degree in range(maxdegree):
     TrainR2[degree] = error.R2(y_train,y_fit)
     
     #Display regression results for each polynomial degree
-    print("\nModel complexity:")
+    print("\n\n\nModel complexity:")
     print(degree+1)
     print("\nOptimal estimator Beta")
     print(Beta.shape)
