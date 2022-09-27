@@ -46,15 +46,12 @@ x = np.hstack((x1,x2)).reshape(n,2)
 #x_test = x_test - x_train_mean
 #y_test = y_test - y_train_mean
 
-
-
 #Initialize before looping:
 polydegree = np.zeros(maxdegree)
 error_Kfold = np.zeros((maxdegree,k))
 estimated_mse_Kfold = np.zeros(maxdegree)
 bias = np.zeros(maxdegree)
 variance = np.zeros(maxdegree)
-
 
 
 i=0
@@ -86,10 +83,11 @@ for degree in range(maxdegree):
 #####Plots####
     
 plt.plot(polydegree, estimated_mse_Kfold, label='Error Cross Validation')
-plt.xticks(np.arange(1, 6, step=1))  # Set label locations.
+plt.xticks(np.arange(1, len(polydegree)+1, step=1))  # Set label locations.
 plt.xlabel('Model complexity')
+plt.ylabel('Mean squared error')
 plt.legend()
-plt.savefig("Results/Error_CrossValidation.png",dpi=150)
+plt.savefig("Results/OLS_Error_CrossValidation.png",dpi=150)
 plt.show()
 
 

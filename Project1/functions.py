@@ -20,3 +20,11 @@ def LinReg(X_train, X_test, y_train, y_test):
     ytildeTrain = X_train @ OLSbeta
     ytildeTest = X_test @ OLSbeta
     return ytildeTrain, ytildeTest, OLSbeta
+
+
+def RidgeReg(X_train, X_test, y_train, y_test,lmb):
+    Ridgebeta = np.linalg.pinv(X_train.T @ X_train + lmb*np.identity(X_train.shape[1])) @ X_train.T @ y_train
+    ytildeTrain = X_train @ Ridgebeta
+    ytildeTest = X_test @ Ridgebeta
+    return ytildeTrain, ytildeTest, Ridgebeta
+

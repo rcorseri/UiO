@@ -20,7 +20,7 @@ def FrankeFunction_noisy(x,y):
     term2 = 0.75*np.exp(-((9*x+1)**2)/49.0 - 0.1*(9*y+1))
     term3 = 0.5*np.exp(-(9*x-7)**2/4.0 - 0.25*((9*y-3)**2))
     term4 = -0.2*np.exp(-(9*x-4)**2 - (9*y-7)**2)
-    noise = np.random.normal(0, 0.001,len(x)*len(x)) 
+    noise = np.random.normal(0, 0.1,len(x)*len(x)) 
     noise = noise.reshape(len(x),len(x))
     return term1 + term2 + term3 + term4 + noise
 
@@ -32,7 +32,7 @@ def FrankeFunction(x,y):
 	return term1 + term2 + term3 + term4 
 
 
-z = FrankeFunction(x, y) + np.random.normal(0,0.1,(100,100))
+z = FrankeFunction(x, y)
 
 # Plot the surface.
 surf = ax.plot_surface(x, y, z, cmap=cm.coolwarm, linewidth=0, antialiased=False)
