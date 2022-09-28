@@ -28,3 +28,10 @@ def RidgeReg(X_train, X_test, y_train, y_test,lmb):
     ytildeTest = X_test @ Ridgebeta
     return ytildeTrain, ytildeTest, Ridgebeta
 
+def LassoReg(X_train, X_test, y_train, y_test,lmb):
+    modelLasso = Lasso(lmb,fit_intercept=False)
+    modelLasso.fit(X_train,y_train)
+    ytildeTrain = modelLasso.predict(X_train)
+    ytildeTest = modelLasso.predict(X_test)
+    return ytildeTrain, ytildeTest
+

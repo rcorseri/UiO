@@ -66,4 +66,5 @@ plt.plot(np.log10(lambdas), MSELassoPredict, 'b--', label = 'MSE Lasso Test')
 plt.xlabel('log10(lambda)')
 plt.ylabel('MSE')
 plt.legend()
-plt.savefi
+plt.savefig("Results/Ridge/Ridge_Lasso_MSE_vs_Lambda.png",dpi=150)
+plt.show()
