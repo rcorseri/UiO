@@ -12,7 +12,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.utils import resample
 from sklearn.model_selection import KFold
 
-from functions import RidgeReg
+from functions import RidgeReg, LassoReg
 from DesignMatrix import DesignMatrix
 import FrankeFunction as FF
 import Calculate_MSE_R2 as error
@@ -73,7 +73,7 @@ for l in range(nlambdas):
                  
             X_train = DesignMatrix(x_train[:,0],x_train[:,1],degree+1)
             X_test = DesignMatrix(x_test[:,0],x_test[:,1],degree+1)
-            y_fit, y_pred, Beta = RidgeReg(X_train, X_test, y_train, y_test,lambdas[l])
+            y_fit, y_pred= LassoReg(X_train, X_test, y_train, y_test,lambdas[l])
             
             error_Kfold[i,j] = error.MSE(y_test,y_pred)
             
@@ -87,13 +87,13 @@ for l in range(nlambdas):
 
 #####Plots####
     
-    plt.plot(polydegree, estimated_mse_Kfold, label='Ridge Error Cross Validation')
+    plt.plot(polydegree, estimated_mse_Kfold, label='Lasso Error Cross Validation')
     plt.xticks(np.arange(1, len(polydegree)+1, step=1))  # Set label locations.
     plt.xlabel('Model complexity')
     plt.ylabel('Mean squared error')
-    plt.title('MSE Ridge regression for lambda = %.0e' %lambdas[l])
+    plt.title('MSE Lasso Regression for lambda = %.0e' %lambdas[l])
     plt.legend()
-    plt.savefig("Results/Ridge/Ridge_MSE_lambda=%.0e.png" %lambdas[l],dpi=150)
+    plt.savefig("Results/Lasso/Lasso_MSE_lambda=%.0e.png" %lambdas[l],dpi=150)
     plt.show()
         
 
