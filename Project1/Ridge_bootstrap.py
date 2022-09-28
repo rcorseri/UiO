@@ -18,7 +18,7 @@ import FrankeFunction as FF
 maxdegree= 5
 
 #Number of bootstraps
-n_bootstraps = 50
+n_bootstraps = 75
 
 #For Ridge regression, set up the hyper-parameters to investigate
 nlambdas = 9
@@ -70,7 +70,6 @@ polydegree = np.zeros(maxdegree)
 y_pred = np.empty((y_test.shape[0],n_bootstraps))
 
 
-#OLS
 for l in range(nlambdas):
     for degree in range(maxdegree):   
         for i in range(n_bootstraps):
@@ -98,12 +97,10 @@ for l in range(nlambdas):
     plt.xlabel('Model complexity')
     plt.title('Bias-Variance trade off (Ridge Reg) for lambda = %.0e' %lambdas[l])
     plt.legend()
-    plt.savefig("Results/Ridge_Bias_Variance_trade_off_lambda=%.0e.png" %lambdas[l],dpi=150)
+    plt.savefig("Results/Ridge/Ridge_Bias_Variance_trade_off_lambda=%.0e.png" %lambdas[l],dpi=150)
     plt.show()
     
-#Plot Error vs Lamba for a given model complexity, here degree=5
-    
-plt.plot(lambdas, )
+
     
 
 

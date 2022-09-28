@@ -22,7 +22,7 @@ import Calculate_MSE_R2 as error
 maxdegree= 5
 
 #Number of k-fold (between 5 and 10) for cross-validation
-k = 5
+k = 10
 kfold = KFold(n_splits = k)
 
 # Make data set.
@@ -82,12 +82,12 @@ for degree in range(maxdegree):
 
 #####Plots####
     
-plt.plot(polydegree, estimated_mse_Kfold, label='Error Cross Validation')
+plt.plot(polydegree, estimated_mse_Kfold, label='OLS Error Cross Validation')
 plt.xticks(np.arange(1, len(polydegree)+1, step=1))  # Set label locations.
 plt.xlabel('Model complexity')
 plt.ylabel('Mean squared error')
 plt.legend()
-plt.savefig("Results/OLS_Error_CrossValidation.png",dpi=150)
+plt.savefig("Results/OLS/OLS_Error_CrossValidation.png",dpi=150)
 plt.show()
 
 

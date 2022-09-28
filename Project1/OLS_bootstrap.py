@@ -18,7 +18,7 @@ import FrankeFunction as FF
 maxdegree= 5
 
 #Number of bootstraps
-n_bootstraps = 50
+n_bootstraps = 75
 
 # Make data set.
 n = 100
@@ -103,7 +103,7 @@ plt.xlabel('Model complexity')
 plt.ylabel('Mean squared error')
 plt.title('Bias-Variance trade off (Linear Reg)')
 plt.legend()
-plt.savefig("Results/OLS_bias_variance_trade_off.png",dpi=150)
+plt.savefig("Results/OLS/OLS_bias_variance_trade_off.png",dpi=150)
 plt.show()
 
 

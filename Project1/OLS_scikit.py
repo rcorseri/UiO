@@ -107,7 +107,7 @@ plt.plot(polydegree, TrainError,'b-o', label='Train MSError')
 plt.xlabel("model complexity (degree)")
 plt.ylabel("Mean squared error")
 plt.legend()
-plt.savefig("Results/OLS_scikit_MSE_vs_complexity.png",dpi=150)
+plt.savefig("Results/OLS/OLS_scikit_MSE_vs_complexity.png",dpi=150)
 plt.show()
 
 #R2 score
@@ -117,7 +117,7 @@ plt.xticks(np.arange(1, len(polydegree)+1, step=1)) # Set label locations.
 plt.xlabel("model complexity (degree)")
 plt.ylabel("R2 score")
 plt.legend()
-plt.savefig("Results/OLS_scikit_R2_vs_complexity.png",dpi=150)
+plt.savefig("Results/OLS/OLS_scikit_R2_vs_complexity.png",dpi=150)
 plt.show()
 
 #Beta coefficients
@@ -145,7 +145,7 @@ plt.xticks(np.arange(21), [r'$\beta_0$', r'$\beta_1$', r'$\beta_2$', \
 
 plt.ylabel("Optimal Beta - predictor value")
 plt.legend()
-plt.savefig("Results/OLS_Optimal_Beta_scikit.png",dpi=150)
+plt.savefig("Results/OLS/OLS_Optimal_Beta_scikit.png",dpi=150)
 
 
 

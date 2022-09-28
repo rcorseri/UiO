@@ -111,7 +111,7 @@ plt.xticks(np.arange(1, maxdegree+1, step=1))  # Set label locations.
 plt.xlabel("model complexity (degree)")
 plt.ylabel("Mean squared error")
 plt.legend()
-plt.savefig("Results/OLS_MSE_vs_complexity.png",dpi=150)
+plt.savefig("Results/OLS/OLS_MSE_vs_complexity.png",dpi=150)
 plt.show()
 
 #R2 score
@@ -121,7 +121,7 @@ plt.xticks(np.arange(1, len(polydegree)+1, step=1))  # Set label locations.
 plt.xlabel("model complexity (degree)")
 plt.ylabel("R2 score")
 plt.legend()
-plt.savefig("Results/OLS_R2_vs_complexity.png",dpi=150)
+plt.savefig("Results/OLS/OLS_R2_vs_complexity.png",dpi=150)
 plt.show()
 
 #Beta coefficients
@@ -149,7 +149,7 @@ plt.xticks(np.arange(21), [r'$\beta_0$', r'$\beta_1$', r'$\beta_2$', \
 
 plt.ylabel("Optimal Beta - predictor value")
 plt.legend()
-plt.savefig("Results/OLS_Beta_Optimal_degree5.png",dpi=150)
+plt.savefig("Results/OLS/OLS_Beta_Optimal_degree5.png",dpi=150)
 
 
 
