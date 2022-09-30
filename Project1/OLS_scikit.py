@@ -10,9 +10,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.pipeline import Pipeline
-
-import FrankeFunction as FF
-import Calculate_MSE_R2 as error
+from functions import LinReg, RidgeReg, LassoReg, MSE, R2, Beta_std
+from FrankeFunction import FrankeFunction
 
 
 #Define maximal model complexity
@@ -20,24 +19,25 @@ maxdegree= 5
 
 # Generate dataset with n observations
 n = 100
-
 x1 = np.random.uniform(0,1,n)
 x2 = np.random.uniform(0,1,n)
-y = FF.FrankeFunction(x1,x2)
 
-#add normally distributed noise N(0,1)
-#y = FF.FrankeFunction(x1,x2)+np.random.normal(0,0.1,n)
+##Define noise
+var = 0.01
+noise = np.random.normal(0,var,n)
 
+y = FrankeFunction(x1,x2) + noise 
+
+##Simple benchmark test the function a bi-variate polynomial of degree 2
+#y=np.ones(n)+x1+x2+x1*x2+(x1**2)+(x2**2)
 
 x1 = np.array(x1).reshape(n,1)
 x2 = np.array(x2).reshape(n,1)
 x = np.hstack((x1,x2)).reshape(n,2)
 y = np.array(y).reshape(n,1)
 
-
 #Split train (80%) and test(20%) data before looping on polynomial degree
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
-
 
 #Scaling data Scikit
 #scaler = StandardScaler()
@@ -52,7 +52,6 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
 #x_test = x_test - x_train_mean
 #y_test = y_test - y_train_mean
 
-
 #Initialize before looping:
 TestError = np.zeros(maxdegree)
 TrainError = np.zeros(maxdegree)
@@ -63,11 +62,10 @@ predictor = []
 
 for degree in range(maxdegree):
     
-    #perform polynomial regression with scikit-learn
+    #OLS with scikit-learn
     model = Pipeline([('poly', PolynomialFeatures(degree=degree+1)),('linear',\
                   LinearRegression(fit_intercept=False))])
-    model = model.fit(x_train,y_train)
-    
+    model = model.fit(x_train,y_train) 
     Beta = model.named_steps['linear'].coef_
     predictor=np.append(predictor,Beta)
 
@@ -80,10 +78,10 @@ for degree in range(maxdegree):
 #    y_train = y_train + np.mean(y_train)
 
     polydegree[degree] = degree+1
-    TestError[degree] = error.MSE(y_test,y_pred)
-    TrainError[degree] = error.MSE(y_train,y_fit)
-    TestR2[degree] = error.R2(y_test,y_pred)
-    TrainR2[degree] = error.R2(y_train,y_fit)
+    TestError[degree] = MSE(y_test,y_pred)
+    TrainError[degree] = MSE(y_train,y_fit)
+    TestR2[degree] = R2(y_test,y_pred)
+    TrainR2[degree] = R2(y_train,y_fit)
     
     #Display regression results for each polynomial degree
     print("\n\n\nModel complexity:")
@@ -91,11 +89,11 @@ for degree in range(maxdegree):
     print("\nOptimal estimator Beta")
     print(Beta.shape)
     print("\nTraining error")
-    print("MSE =",error.MSE(y_train,y_fit))
-    print("R2 =",error.R2(y_train,y_fit))
+    print("MSE =",MSE(y_train,y_fit))
+    print("R2 =",R2(y_train,y_fit))
     print("\nTesting error")
-    print("MSE =",error.MSE(y_test,y_pred))
-    print("R2  =",error.R2(y_test,y_pred))
+    print("MSE =",MSE(y_test,y_pred))
+    print("R2  =",R2(y_test,y_pred))
 
 
 #####Plots####
@@ -129,8 +127,6 @@ plt.plot(predictor[9:19],'b-*' , label='degree=3')
 plt.plot(predictor[19:34],'g*-' , label='degree=4')
 plt.plot(predictor[34:55],'y*-' , label='degree=5')
 
-
-
 locs, labels = plt.xticks()  # Get the current locations and labels.
 plt.xticks(np.arange(0, 1, step=1))  # Set label locations.
 plt.xticks(np.arange(21), [r'$\beta_0$', r'$\beta_1$', r'$\beta_2$', \
@@ -141,7 +137,6 @@ plt.xticks(np.arange(21), [r'$\beta_0$', r'$\beta_1$', r'$\beta_2$', \
            r'$\beta_{15}$', r'$\beta_{16}$', r'$\beta_{17}$', \
            r'$\beta_{18}$', r'$\beta_{19}$', r'$\beta_{20}$',r'$\beta_{21}$'\
            ], rotation=45)  # Set text labels.
-
 
 plt.ylabel("Optimal Beta - predictor value")
 plt.legend()

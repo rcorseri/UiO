@@ -35,3 +35,19 @@ def LassoReg(X_train, X_test, y_train, y_test,lmb):
     ytildeTest = modelLasso.predict(X_test)
     return ytildeTrain, ytildeTest
 
+
+def R2(y_data, y_model):
+    return 1 - np.sum((y_data - y_model) ** 2) / np.sum((y_data - np.mean(y_data)) ** 2)
+
+def MSE(y_data,y_model):
+    n = np.size(y_model)
+    return np.sum((y_data-y_model)**2)/n
+
+def Beta_std(var,X_train,Beta,p):
+    Beta_var = var*np.linalg.pinv(X_train.T @ X_train)
+    err = []
+    for p_ in range(p):
+        err = np.append(err,Beta_var[p_,p_] ** 0.5)
+    return err
+    
+

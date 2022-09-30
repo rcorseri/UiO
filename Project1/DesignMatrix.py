@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Sep 21 15:29:22 2022
-
+This function returns the design matrix of a bi-variate polynomial function up to degree 10
 @author: rpcorser
 """
 import numpy as np

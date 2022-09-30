@@ -10,34 +10,31 @@ from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.pipeline import Pipeline
 
-from functions import LinReg
+from functions import LinReg, RidgeReg, LassoReg, MSE, R2, Beta_std
 from DesignMatrix import DesignMatrix
-import FrankeFunction as FF
-import Calculate_MSE_R2 as error
+from FrankeFunction import FrankeFunction
 
-#polynomial degree up to 10
+
+#Define maximal model complexity
 maxdegree= 5
 
-# Make data set.
+# Generate dataset with n observations
 n = 100
-
-
 x1 = np.random.uniform(0,1,n)
 x2 = np.random.uniform(0,1,n)
 
+#Define noise
+var = 0.01
+noise = np.random.normal(0,var,n)
 
-y = FF.FrankeFunction(x1,x2)
+y = FrankeFunction(x1,x2) + noise 
 
-#Add normally distributed noise
-#y = y + np.random.normal(0,0.1,y.shape)
+#Simple benchmark test the function a bi-variate polynomial of degree 2
+#y=np.ones(n)+x1+x2+x1*x2+(x1**2)+(x2**2)
 
 x1 = np.array(x1).reshape(n,1)
 x2 = np.array(x2).reshape(n,1)
-
 x = np.hstack((x1,x2)).reshape(n,2)
-
-#Design matrix
-
 
 #Split train (80%) and test(20%) data before looping on polynomial degree
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
@@ -51,35 +48,33 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
 #x_test = x_test - x_train_mean
 #y_test = y_test - y_train_mean
 
-
-
 #Initialize before looping:
-
-
 TestError = np.zeros(maxdegree)
 TrainError = np.zeros(maxdegree)
 TestR2 = np.zeros(maxdegree)
 TrainR2 = np.zeros(maxdegree)
 polydegree = np.zeros(maxdegree)
-predictor =[]
+predictor_std = []
+predictor = []
 
 #OLS
 for degree in range(maxdegree):
     
-  
     X_train = DesignMatrix(x_train[:,0],x_train[:,1],degree+1)
     X_test = DesignMatrix(x_test[:,0],x_test[:,1],degree+1)
     y_fit, y_pred, Beta = LinReg(X_train, X_test, y_train, y_test)
+    predictor = np.append(predictor, Beta)
+   
+    #Accumulate standard deviation values for each Beta
+    Beta_err = Beta_std(var, X_train, Beta, Beta.shape[0])
+    predictor_std = np.append(predictor_std,Beta_err)
+ 
     
-    
-
-    predictor=np.append(predictor,Beta)
     polydegree[degree] = degree+1
-    
-    TestError[degree] = error.MSE(y_test,y_pred)
-    TrainError[degree] = error.MSE(y_train ,y_fit)
-    TestR2[degree] = error.R2(y_test,y_pred)
-    TrainR2[degree] = error.R2(y_train,y_fit)
+    TestError[degree] = MSE(y_test,y_pred)
+    TrainError[degree] = MSE(y_train ,y_fit)
+    TestR2[degree] = R2(y_test,y_pred)
+    TrainR2[degree] = R2(y_train,y_fit)
         
     #With rescaling
 #    TestError[degree] = error.MSE(y_test + y_train_mean,y_pred + y_train_mean)
@@ -87,22 +82,20 @@ for degree in range(maxdegree):
 #    TestR2[degree] = error.R2(y_test + y_train_mean,y_pred + y_train_mean)
 #    TrainR2[degree] = error.R2(y_train + y_train_mean,y_fit + y_train_mean)
     
-    
     #Display regression results for each polynomial degree
     print("\nModel complexity:")
     print(degree+1)
     print("\nOptimal estimator Beta")
     print(Beta.shape)
     print("\nTraining error")
-    print("MSE =",error.MSE(y_train,y_fit))
-    print("R2 =",error.R2(y_train,y_fit))
+    print("MSE =",MSE(y_train,y_fit))
+    print("R2 =",R2(y_train,y_fit))
     print("\nTesting error")
-    print("MSE =",error.MSE(y_test,y_pred))
-    print("R2  =",error.R2(y_test,y_pred))
+    print("MSE =",MSE(y_test,y_pred))
+    print("R2  =",R2(y_test,y_pred))
 
 
-
-#####Plots####
+#####Produce Plots#######
     
 #MSE
 plt.plot(polydegree, TestError,'r-o' , label='Test MSError')
@@ -124,16 +117,33 @@ plt.legend()
 plt.savefig("Results/OLS/OLS_R2_vs_complexity.png",dpi=150)
 plt.show()
 
-#Beta coefficients
-print(predictor.shape)
-
+#Beta coefficients (up to 21) 
 plt.plot(predictor[0:3],'md-' , label='degree=1')
 plt.plot(predictor[3:9],'r-*' , label='degree=2')
 plt.plot(predictor[9:19],'b-*' , label='degree=3')
 plt.plot(predictor[19:34],'g*-' , label='degree=4')
 plt.plot(predictor[34:55],'y*-' , label='degree=5')
 
+locs, labels = plt.xticks()  # Get the current locations and labels.
+plt.xticks(np.arange(0, 1, step=1))  # Set label locations.
+plt.xticks(np.arange(21), [r'$\beta_0$', r'$\beta_1$', r'$\beta_2$', \
+           r'$\beta_3$', r'$\beta_4$', r'$\beta_5$', \
+           r'$\beta_6$', r'$\beta_7$', r'$\beta_8$', \
+           r'$\beta_9$', r'$\beta_{10}$', r'$\beta_{11}$', \
+           r'$\beta_{12}$', r'$\beta_{13}$', r'$\beta_{14}$', \
+           r'$\beta_{15}$', r'$\beta_{16}$', r'$\beta_{17}$', \
+           r'$\beta_{18}$', r'$\beta_{19}$', r'$\beta_{20}$',r'$\beta_{21}$'\
+           ], rotation=45)  # Set text labels.
 
+plt.ylabel("Optimal Beta - predictor value")
+plt.legend()
+plt.show()
+plt.savefig("Results/OLS/OLS_Beta_Optimal_degree5.png",dpi=150)
+
+#Beta coefficients with error bars for degree 1, 3 and 5 
+plt.errorbar(np.array(range(0,21)),predictor[34:55], yerr=predictor_std[34:55],uplims=True, lolims=True, fmt='o', markersize=4, capsize=1,label='degree=5')
+plt.errorbar(np.array(range(0,10)),predictor[9:19], yerr=predictor_std[9:19],uplims=True, lolims=True, fmt='o', markersize=4, capsize=1,label='degree=3')
+plt.errorbar(np.array(range(0,3)),predictor[0:3], yerr=predictor_std[0:3],uplims=True, lolims=True,fmt='o', markersize=4, capsize=1, label='degree=1')
 
 locs, labels = plt.xticks()  # Get the current locations and labels.
 plt.xticks(np.arange(0, 1, step=1))  # Set label locations.
@@ -149,11 +159,8 @@ plt.xticks(np.arange(21), [r'$\beta_0$', r'$\beta_1$', r'$\beta_2$', \
 
 plt.ylabel("Optimal Beta - predictor value")
 plt.legend()
-plt.savefig("Results/OLS/OLS_Beta_Optimal_degree5.png",dpi=150)
-
-
-
-
+plt.show()
+plt.savefig("Results/OLS/OLS_Beta_Optimal_degree5_std.png",dpi=150)
 
 
 
