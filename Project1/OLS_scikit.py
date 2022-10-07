@@ -140,4 +140,14 @@ plt.xticks(np.arange(21), [r'$\beta_0$', r'$\beta_1$', r'$\beta_2$', \
 
 plt.ylabel("Optimal Beta - predictor value")
 plt.legend()
-plt.savefig("Results/OLS/OLS_Optimal_Beta_scikit.png",dpi=1
+plt.savefig("Results/OLS/OLS_Optimal_Beta_scikit.png",dpi=150)
+
+
+
+
+
+
+
+
+
+
