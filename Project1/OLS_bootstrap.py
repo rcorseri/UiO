@@ -10,8 +10,7 @@ from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.pipeline import Pipeline
 from sklearn.utils import resample
-from functions import LinReg, RidgeReg, LassoReg, MSE, R2, Beta_std
-from DesignMatrix import DesignMatrix
+from Functions import DesignMatrix, LinReg, RidgeReg, LassoReg, MSE, R2, Beta_std
 from FrankeFunction import FrankeFunction
 
 

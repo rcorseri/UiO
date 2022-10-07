@@ -10,7 +10,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.pipeline import Pipeline
-from functions import LinReg, RidgeReg, LassoReg, MSE, R2, Beta_std
+from Functions import DesignMatrix, LinReg, RidgeReg, LassoReg, MSE, R2, Beta_std
 from FrankeFunction import FrankeFunction
 
 
@@ -26,10 +26,10 @@ x2 = np.random.uniform(0,1,n)
 var = 0.01
 noise = np.random.normal(0,var,n)
 
-y = FrankeFunction(x1,x2) + noise 
+#y = FrankeFunction(x1,x2) + noise 
 
 ##Simple benchmark test the function a bi-variate polynomial of degree 2
-#y=np.ones(n)+x1+x2+x1*x2+(x1**2)+(x2**2)
+y=np.ones(n)+x1+x2+x1*x2+(x1**2)+(x2**2)
 
 x1 = np.array(x1).reshape(n,1)
 x2 = np.array(x2).reshape(n,1)
@@ -140,14 +140,4 @@ plt.xticks(np.arange(21), [r'$\beta_0$', r'$\beta_1$', r'$\beta_2$', \
 
 plt.ylabel("Optimal Beta - predictor value")
 plt.legend()
-plt.savefig("Results/OLS/OLS_Optimal_Beta_scikit.png",dpi=150)
-
-
-
-
-
-
-
-
-
-
+plt.savefig("Results/OLS/OLS_Optimal_Beta_scikit.png",dpi=1

@@ -7,9 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn import linear_model
-from functions import RidgeReg, LassoReg
-from DesignMatrix import DesignMatrix
-from functions import LinReg, RidgeReg, LassoReg, MSE, R2, Beta_std
+from Functions import DesignMatrix, LinReg, RidgeReg, LassoReg, MSE, R2, Beta_std
 from FrankeFunction import FrankeFunction
 
 #Model complexity (polynomial degree up to 10)

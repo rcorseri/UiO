@@ -11,8 +11,7 @@ from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.pipeline import Pipeline
 from sklearn.utils import resample
 from sklearn.model_selection import KFold
-from functions import LinReg, RidgeReg, LassoReg, MSE, R2, Beta_std
-from DesignMatrix import DesignMatrix
+from Functions import DesignMatrix, LinReg, RidgeReg, LassoReg, MSE, R2, Beta_std
 from FrankeFunction import FrankeFunction
 
 
@@ -68,7 +67,7 @@ for degree in range(maxdegree):
              
         X_train = DesignMatrix(x_train[:,0],x_train[:,1],degree+1)
         X_test = DesignMatrix(x_test[:,0],x_test[:,1],degree+1)
-        y_fit, y_pred, Beta = LinReg(X_train, X_test, y_train, y_test)
+        y_fit, y_pred, Beta = LinReg(X_train, X_test, y_train)
         
         error_Kfold[i,j] = MSE(y_test,y_pred)
         
