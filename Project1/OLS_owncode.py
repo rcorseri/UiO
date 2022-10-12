@@ -35,30 +35,8 @@ x1 = np.hstack((x,y)).reshape(n,2)
 # Split the data in test (80%) and training dataset (20%) 
 x_train, x_test, z_train, z_test = train_test_split(x1, z, test_size=0.2)
 
-#Design-matrix X
-X_train = DesignMatrix(x_train[:,0],x_train[:,1],maxdegree)
-X_test = DesignMatrix(x_test[:,0],x_test[:,1],maxdegree)
-
-# matrix inversion to find beta
-ztildeOLS, zpredictOLS, OLSbeta = LinReg(X_train, X_test, z_train)
 
 
-# Scale the data: not needed
-#X_train_scaled, X_test_scaled, z_train_scaled, z_test_scaled = ScaleData(X_train, X_test, z_train, z_test)
-
-
-print(OLSbeta)
-
-#Check MSE and R2 of train/test data
-print("Train MSE OLS")
-print(MSE(z_train,ztildeOLS))
-print("Test MSE OLS")
-print(MSE(z_test,zpredictOLS))
-
-print("Train R2")
-print(R2(z_train,ztildeOLS))
-print("Test R2")
-print(R2(z_test,zpredictOLS))
 
 #%%
 #Plot the resulting scores (MSE and R2) as functions of the polynomial degree (here up to polymial degree five). 
