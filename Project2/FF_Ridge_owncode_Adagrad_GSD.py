@@ -3,7 +3,7 @@ and returns model evalutation (MSE and R2) and optimal predictor
 The loop is on polynomial degree
 Author: R Corseri & L Barreiro'''
 
-#%%
+
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -11,12 +11,12 @@ from sklearn.model_selection import train_test_split
 from Functions import Beta_std, FrankeFunction, R2, MSE, DesignMatrix, LinReg
 from Minibatch import create_mini_batches
 
-#%%
+
 #OLS on the Franke function
 #Create data
 #np.random.seed(2003)
 n = 100
-maxdegree = 10
+maxdegree = 5
 
 x = np.random.uniform(0,1,n)
 y = np.random.uniform(0,1,n)
@@ -39,7 +39,7 @@ z_train = np.reshape(z_train,(z_train.shape[0],1))
 z_test = np.reshape(z_test,(z_test.shape[0],1))
 
 
-#%%
+
 #Plot the resulting scores (MSE and R2) as functions of the polynomial degree (here up to polymial degree five). 
 
 #Initialize before looping:
@@ -50,44 +50,37 @@ TrainR2 = np.zeros(maxdegree)
 polydegree = np.zeros(maxdegree)
 #predictor = []
 #predictor_std = []
-
+lmb = 0.0001
 
 for degree in range(maxdegree):
     X_train = DesignMatrix(x_train[:,0],x_train[:,1],degree+1)
     X_test = DesignMatrix(x_test[:,0],x_test[:,1],degree+1)
 
     #OLS With gradient descent
-    M = 10   #size of each minibatch
+    M = 20   #size of each minibatch
     m = int(z.shape[0]/M) #number of minibatches
     n_epochs = 5000 #number of epochs
     
     
     betas = np.random.randn(X_train.shape[1],1)
-    eta = 0.01
+    eta = 0.1
     delta = 10**-7
     j = 0
-    
-    # improve with momentum gradient descent
-    change = 0.0
-    delta_momentum = 0.3
     
     for epoch in range(1,n_epochs+1):
         mini_batches = create_mini_batches(X_train,z_train,M) 
         Giter = np.zeros(shape=(X_train.shape[1],X_train.shape[1]))
         for minibatch in mini_batches:
             X_mini, z_mini = minibatch
-            gradients = (2.0/M)*X_mini.T @ (X_mini @ betas - z_mini)
+            gradients = (2.0/M)*X_mini.T @ (X_mini @ betas - z_mini) + 2*lmb*betas
           
-            # Calculate the outer product of the gradients
+            	# Calculate the outer product of the gradients
             Giter +=gradients @ gradients.T 
             #Simpler algorithm with only diagonal elements
             Ginverse = np.c_[eta/(delta+np.sqrt(np.diagonal(Giter)))]
-            
             # compute update
-            new_change = np.multiply(Ginverse,gradients) + delta_momentum*change        
-            betas -= new_change
-            change = new_change
-
+            update = np.multiply(Ginverse,gradients)
+            betas -= update
         j+=1
     
     z_pred = X_test @ betas
@@ -121,7 +114,7 @@ plt.xlabel('Model complexity (degree)')
 plt.ylabel('Mean Square Error')
 plt.xticks(np.arange(1, maxdegree+1, step=1))  # Set label locations.
 plt.legend()
-plt.savefig("Results/OLS/AdagradSGD_MSE_vs_complexity.png", dpi=150)
+plt.savefig("Results/Ridge/AdagradSGD_MSE_vs_complexity.png", dpi=150)
 plt.show()
 
 #R2 score
@@ -131,34 +124,6 @@ plt.xlabel('Model complexity')
 plt.ylabel('R2 score')
 plt.xticks(np.arange(1, maxdegree+1, step=1))  # Set label locations.
 plt.legend()
-plt.savefig("Results/OLS/AdagradSGD_R2_vs_complexity.png", dpi=150)
+plt.savefig("Results/Ridge/AdagradSGD_R2_vs_complexity.png", dpi=150)
 plt.show()
 
-#%%
-#Plot also the parameters 𝛽 as you increase the order of the polynomial.
-#Beta coefficients (up to 21)
-#print(predictor.shape)
-
-#plt.plot(predictor[0:55])
-
-#plt.plot(predictor[0:3],'md-' , label='degree=1')
-#plt.plot(predictor[3:9],'r-*' , label='degree=2')
-#plt.plot(predictor[9:19],'b-*' , label='degree=3')
-#plt.plot(predictor[19:34],'g*-' , label='degree=4')
-#plt.plot(predictor[34:55],'y*-' , label='degree=5')
-#
-#locs, labels = plt.xticks()  # Get the current locations and labels.
-#plt.xticks(np.arange(0, 1, step=1))  # Set label locations.
-#plt.xticks(np.arange(21), [r'$\beta_0$', r'$\beta_1$', r'$\beta_2$', \
-#           r'$\beta_3$', r'$\beta_4$', r'$\beta_5$', \
-#           r'$\beta_6$', r'$\beta_7$', r'$\beta_8$', \
-#           r'$\beta_9$', r'$\beta_{10}$', r'$\beta_{11}$', \
-#           r'$\beta_{12}$', r'$\beta_{13}$', r'$\beta_{14}$', \
-#           r'$\beta_{15}$', r'$\beta_{16}$', r'$\beta_{17}$', \
-#           r'$\beta_{18}$', r'$\beta_{19}$', r'$\beta_{20}$'\
-#           ], rotation=45)  # Set text labels.
-#
-#plt.ylabel("Optimal Beta - predictor value")
-#plt.legend(loc='lower right',prop={'size': 8})
-#plt.show()
-#plt.savefig("Results/OLS/OLS_Beta_Optimal_degree5.png",dpi=150)

@@ -16,14 +16,14 @@ from Minibatch import create_mini_batches
 #Create data
 #np.random.seed(2003)
 n = 100
-maxdegree = 10
+maxdegree = 5
 
 x = np.random.uniform(0,1,n)
 y = np.random.uniform(0,1,n)
 z = FrankeFunction(x, y)
 # Add random distributed noise
 var = 0.1
-z = z + np.random.normal(0,var,z.shape)
+#z = z + np.random.normal(0,var,z.shape)
 
 
 x = np.array(x).reshape(n,1)
@@ -59,7 +59,7 @@ for degree in range(maxdegree):
     #OLS With gradient descent
     M = 10   #size of each minibatch
     m = int(z.shape[0]/M) #number of minibatches
-    n_epochs = 5000 #number of epochs
+    n_epochs = 10000 #number of epochs
     
     
     betas = np.random.randn(X_train.shape[1],1)
@@ -121,7 +121,7 @@ plt.xlabel('Model complexity (degree)')
 plt.ylabel('Mean Square Error')
 plt.xticks(np.arange(1, maxdegree+1, step=1))  # Set label locations.
 plt.legend()
-plt.savefig("Results/OLS/AdagradSGD_MSE_vs_complexity.png", dpi=150)
+plt.savefig("Results/OLS/Adagrad_momentum_SGD_MSE_vs_complexity.png", dpi=150)
 plt.show()
 
 #R2 score
@@ -131,34 +131,6 @@ plt.xlabel('Model complexity')
 plt.ylabel('R2 score')
 plt.xticks(np.arange(1, maxdegree+1, step=1))  # Set label locations.
 plt.legend()
-plt.savefig("Results/OLS/AdagradSGD_R2_vs_complexity.png", dpi=150)
+plt.savefig("Results/OLS/Adagrad_momentum_SGD_R2_vs_complexity.png", dpi=150)
 plt.show()
 
-#%%
-#Plot also the parameters 𝛽 as you increase the order of the polynomial.
-#Beta coefficients (up to 21)
-#print(predictor.shape)
-
-#plt.plot(predictor[0:55])
-
-#plt.plot(predictor[0:3],'md-' , label='degree=1')
-#plt.plot(predictor[3:9],'r-*' , label='degree=2')
-#plt.plot(predictor[9:19],'b-*' , label='degree=3')
-#plt.plot(predictor[19:34],'g*-' , label='degree=4')
-#plt.plot(predictor[34:55],'y*-' , label='degree=5')
-#
-#locs, labels = plt.xticks()  # Get the current locations and labels.
-#plt.xticks(np.arange(0, 1, step=1))  # Set label locations.
-#plt.xticks(np.arange(21), [r'$\beta_0$', r'$\beta_1$', r'$\beta_2$', \
-#           r'$\beta_3$', r'$\beta_4$', r'$\beta_5$', \
-#           r'$\beta_6$', r'$\beta_7$', r'$\beta_8$', \
-#           r'$\beta_9$', r'$\beta_{10}$', r'$\beta_{11}$', \
-#           r'$\beta_{12}$', r'$\beta_{13}$', r'$\beta_{14}$', \
-#           r'$\beta_{15}$', r'$\beta_{16}$', r'$\beta_{17}$', \
-#           r'$\beta_{18}$', r'$\beta_{19}$', r'$\beta_{20}$'\
-#           ], rotation=45)  # Set text labels.
-#
-#plt.ylabel("Optimal Beta - predictor value")
-#plt.legend(loc='lower right',prop={'size': 8})
-#plt.show()
-#plt.savefig("Results/OLS/OLS_Beta_Optimal_degree5.png",dpi=150)
