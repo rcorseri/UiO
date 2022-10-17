@@ -56,14 +56,14 @@ for degree in range(maxdegree):
     X_train = DesignMatrix(x_train[:,0],x_train[:,1],degree+1)
     X_test = DesignMatrix(x_test[:,0],x_test[:,1],degree+1)
 
-    #OLS With gradient descent
+    #Ridge With gradient descent
     M = 20   #size of each minibatch
     m = int(z.shape[0]/M) #number of minibatches
     n_epochs = 5000 #number of epochs
     
     
     betas = np.random.randn(X_train.shape[1],1)
-    eta = 0.1
+    eta = 0.0001
     delta = 10**-7
     j = 0
     

@@ -16,12 +16,13 @@ from sklearn.pipeline import Pipeline
 
 #Create data
 #np.random.seed(2003)
-n = 100
-maxdegree = 5
+n = 1000
+maxdegree = 2
 
 x = np.random.uniform(0,1,n)
 y = np.random.uniform(0,1,n)
-z = FrankeFunction(x, y)
+#z = FrankeFunction(x, y)
+z = 1 + x + y + x*y + x**2 + y**2
 
 # Add random distributed noise
 #var = 0.1
@@ -35,36 +36,68 @@ x1 = np.hstack((x,y)).reshape(n,2)
 z = np.reshape(z,(z.shape[0],1))
 X = DesignMatrix(x1[:,0],x1[:,1],maxdegree)
 
-#OLS With gradient descent
-M = 20   #size of each minibatch
+##
+
+#OLS using stochastic gradient descent
+M = 200   #size of each minibatch
 m = int(z.shape[0]/M) #number of minibatches
-n_epochs = 100000 #number of epochs
+n_epochs = 1500 #number of epochs
 
-
+#Set up RMSprop
 beta = np.random.randn(X.shape[1],1)
 eta = 0.001
+# Value for parameter rho
+rho = 0.99
+rho2 = 0.9
+
 delta = 10**-7
 j = 0
+err=[]
+
+# improve with momentum gradient descent
+change = 0.0
+delta_momentum = 0.3
 
 for epoch in range(1,n_epochs+1):
     mini_batches = create_mini_batches(X,z,M) 
     Giter = np.zeros(shape=(X.shape[1],X.shape[1]))
+    gradients = np.zeros(shape=(X.shape[1],1))
+    
     for minibatch in mini_batches:
         X_mini, z_mini = minibatch
+        
+        Previous = Giter
+        Previous2 = gradients
+        
         gradients = (2.0/M)*X_mini.T @ (X_mini @ beta - z_mini)
-      
-        	# Calculate the outer product of the gradients
+        
+
+        # Calculate the outer product of the gradients
         Giter +=gradients @ gradients.T 
+        
+        #scaling with rho the new and the previous results
+        Gnew = (rho*Previous+(1-rho)*Giter)
+        Gnew2 = (rho2*Previous2+(1-rho2)*gradients)
+        
+        Gnew = (1/(1-rho))*Gnew
+        Gnew2 = (1/(1-rho2))*Gnew2
+        
         #Simpler algorithm with only diagonal elements
-        Ginverse = np.c_[eta/(delta+np.sqrt(np.diagonal(Giter)))]
+        Ginverse = np.c_[eta/(delta+np.sqrt(np.diagonal(Gnew)))]
+        
         # compute update
-        update = np.multiply(Ginverse,gradients)
-        beta -= update
-    j+=1
-
-
-print(j)  
-print("Beta with adagrad SGD")
+        new_change = np.multiply(Ginverse,Gnew2) + delta_momentum*change        
+        beta -= new_change
+        change = new_change
+                              
+    err=np.append(err,MSE(z,X @ beta))
+        
+    
+    
+plt.yscale('log')
+plt.plot(err)
+  
+print("Beta with ADAM momentum SGD")
 print(beta.T)
 print("Training error")
 print("MSE =",MSE(z,X @ beta))

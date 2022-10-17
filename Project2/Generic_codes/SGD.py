@@ -21,7 +21,8 @@ maxdegree = 2
 
 x = np.random.uniform(0,1,n)
 y = np.random.uniform(0,1,n)
-z = FrankeFunction(x, y)
+#z = FrankeFunction(x, y)
+z = 1 + x + y + x*y + x**2 + y**2
 
 # Add random distributed noise
 #var = 0.1
@@ -38,14 +39,13 @@ X = DesignMatrix(x1[:,0],x1[:,1],maxdegree)
 #OLS With gradient descent
 M = 20   #size of each minibatch
 m = int(z.shape[0]/M) #number of minibatches
-n_epochs = 50000 #number of epochs
+n_epochs = 8000 #number of epochs
 
 
 beta = np.random.randn(X.shape[1],1)
 eta = 0.01
 j = 0
-eps = []
-
+err = []
 
 for epoch in range(1,n_epochs+1):
     mini_batches = create_mini_batches(X,z,M)   
@@ -53,12 +53,13 @@ for epoch in range(1,n_epochs+1):
         X_mini, z_mini = minibatch
         gradient = (2.0/M)*X_mini.T @ (X_mini @ beta - z_mini)
         beta -= eta*gradient
-        if (np.linalg.norm(gradient)!= 0):
-            eps = np.append(eps, np.linalg.norm(gradient))
-    j+=1
+       
+    err = np.append(err,MSE(z,X @ beta))
+    
 
 
-print(j)  
+plt.plot(err)
+ 
 print("Beta with SGD")
 print(beta.T)
 print("Training error")

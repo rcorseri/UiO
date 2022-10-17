@@ -39,13 +39,15 @@ X = DesignMatrix(x1[:,0],x1[:,1],maxdegree)
 ##
 
 #OLS using stochastic gradient descent
-M = 10   #size of each minibatch
+M = 20   #size of each minibatch
 m = int(z.shape[0]/M) #number of minibatches
 n_epochs = 1500 #number of epochs
 
-#Set up adagrad
+#Set up RMSprop
 beta = np.random.randn(X.shape[1],1)
 eta = 0.001
+# Value for parameter rho
+rho = 0.99
 delta = 10**-7
 j = 0
 err=[]
@@ -57,30 +59,38 @@ delta_momentum = 0.3
 for epoch in range(1,n_epochs+1):
     mini_batches = create_mini_batches(X,z,M) 
     Giter = np.zeros(shape=(X.shape[1],X.shape[1]))
+    
     for minibatch in mini_batches:
         X_mini, z_mini = minibatch
+        
+        Previous = Giter
+
         gradients = (2.0/M)*X_mini.T @ (X_mini @ beta - z_mini)
-      
+        
+        
         # Calculate the outer product of the gradients
         Giter +=gradients @ gradients.T 
         
+        #scaling with rho the new and the previous results
+        Gnew = (rho*Previous+(1-rho)*Giter)
+     
+        
         #Simpler algorithm with only diagonal elements
-        Ginverse = np.c_[eta/(delta+np.sqrt(np.diagonal(Giter)))]
+        Ginverse = np.c_[eta/(delta+np.sqrt(np.diagonal(Gnew)))]
         
         # compute update
         new_change = np.multiply(Ginverse,gradients) + delta_momentum*change        
         beta -= new_change
         change = new_change
-        
+                              
     err=np.append(err,MSE(z,X @ beta))
         
-    
     
     
 plt.yscale('log')
 plt.plot(err)
   
-print("Beta with adagrad SGD")
+print("Beta with RMSprop momentum SGD")
 print(beta.T)
 print("Training error")
 print("MSE =",MSE(z,X @ beta))

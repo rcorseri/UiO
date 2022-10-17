@@ -17,7 +17,8 @@ maxdegree = 2
 
 x = np.random.uniform(0,1,n)
 y = np.random.uniform(0,1,n)
-z = FrankeFunction(x, y)
+#z = FrankeFunction(x, y)
+z = 1 + x + y + x*y + x**2 + y**2
 
 # Add random distributed noise
 #var = 0.1
@@ -104,6 +105,7 @@ print("R2  =",R2(z_test,z_pred))
 beta = np.random.randn(X_train.shape[1],1)
 eta = 0.01
 eps = [1]
+err = []
 i=0
 
 while(eps[-1] >= 10**(-4)) :
@@ -112,10 +114,11 @@ while(eps[-1] >= 10**(-4)) :
     gradient = (2.0/d)*X_train.T @ (X_train @ beta - z_train)
     eps = np.append(eps,np.linalg.norm(gradient))
     beta -= eta*gradient
+    err = np.append(err,MSE(z_train,X_train @ beta))
     i+=1
 print('\n number of iteration')
 print(i)  
-plt.plot(eps)
+plt.plot(err)
 
 beta = np.reshape(beta,(beta.shape[0],))
 z_train = np.reshape(z_train,(d,))
