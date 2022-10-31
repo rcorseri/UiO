@@ -54,7 +54,7 @@ epochs = 1000 #number of epochs
 
 etas = np.logspace(-5, -1, 5)
 lambdas = np.logspace(-5, 2, 8)
-n_hidden_neurons = [25]
+n_hidden_neurons = [5,5,5]
 n_categories = 1
 n_features = x_train.shape[1]
 n_inputs = x_train.shape[0]

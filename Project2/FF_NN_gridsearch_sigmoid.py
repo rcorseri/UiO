@@ -11,7 +11,7 @@ from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.pipeline import Pipeline
 import seaborn as sns
-from NeuralNetwork_regression_sigmoid import NeuralNetwork, sigmoid, create_mini_batches
+from NeuralNetwork_regression_sigmoid import NeuralNetwork, sigmoid
 from sklearn.neural_network import MLPRegressor
 
 

@@ -7,31 +7,29 @@ Created on Tue Oct 18 12:02:03 2022
 """
 import numpy as np
 
-def create_mini_batches(X, y, batch_size):
-    mini_batches = []
-    data = np.hstack((X, y))
-    np.random.shuffle(data)
-    n_minibatches = data.shape[0] // batch_size
-    i = 0
- 
-    for i in range(n_minibatches + 1):
-        mini_batch = data[i * batch_size:(i + 1)*batch_size, :]
-        X_mini = mini_batch[:, :-1]
-        Y_mini = mini_batch[:, -1].reshape((-1, 1))
-        mini_batches.append((X_mini, Y_mini))
-    if data.shape[0] % batch_size != 0:
-        mini_batch = data[i * batch_size:data.shape[0]]
-        X_mini = mini_batch[:, :-1]
-        Y_mini = mini_batch[:, -1].reshape((-1, 1))
-        mini_batches.append((X_mini, Y_mini))
-    return mini_batches
+def accuracy_score_numpy(Y_test, Y_pred):
+    return np.sum(Y_test == Y_pred) / len(Y_test)
+
+def softmax_stable(x):
+    exp = np.exp(x) - np.exp(max(x))
+    return exp / np.sum(exp)
+
+def leakyrelu(X):
+    alpha = 0.01
+    return np.maximum(alpha*X,X)
+
+def sigmoid(X):
+    if X.all()>=0:
+        z = np.exp(-X)
+        return 1. / (1. +z)
+    else:
+        z = np.exp(X)
+        return z / (1. + z)
 
 
-def relu(X):
-    return X * (X > 0)
-
-def relu_grad(X):
-    return 1. * (X > 0)
+def leakyrelu_grad(X):
+    alpha = 0.01
+    return np.where( X > 0, 1, alpha)
     
 
 def R2(y_data, y_model):
@@ -101,11 +99,14 @@ class NeuralNetwork:
         for i in range(len(self.n_hidden_neurons)):
             self.X_prev = self.X_curr
             self.z_h[i] = np.matmul(self.X_prev, self.hidden_weights[i]) + self.hidden_bias[i]
-            self.a_h[i] = relu(self.z_h[i]) 
+            self.a_h[i] = leakyrelu(self.z_h[i]) 
             self.X_curr = self.a_h[i]
         
         self.z_o = np.matmul(self.a_h[-1], self.output_weights[0]) + self.output_bias[0]
-        self.a_o = relu(self.z_o)
+       
+        self.a_o = sigmoid(self.z_o)
+        #self.a_o = np.tanh(self.z_o)
+        #self.a_o = softmax_stable(self.z_o)
         #self.a_o = self.z_o #For regression problem, the output activation function is the identity function
         return self.a_o
 
@@ -118,11 +119,15 @@ class NeuralNetwork:
           
             self.X_prev = self.X_curr
             self.z_h[i] = np.matmul(self.X_prev, self.hidden_weights[i]) + self.hidden_bias[i]
-            self.a_h[i] = relu(self.z_h[i]) 
+            #print(self.hidden_weights[i])
+            self.a_h[i] = leakyrelu(self.z_h[i]) 
             self.X_curr = self.a_h[i]
         
         self.z_o = np.matmul(self.a_h[-1], self.output_weights[0]) + self.output_bias[0]
-        self.a_o = relu(self.z_o)
+        
+        #self.a_o = softmax_stable(self.z_o)
+        self.a_o = sigmoid(self.z_o)
+        #self.a_o = np.tanh(self.z_o)
         #self.a_o = self.z_o 
               
 
@@ -141,14 +146,14 @@ class NeuralNetwork:
                 self.output_weights_gradient += self.lmbd * self.output_weights[0]
             
             self.output_bias_gradient = np.sum(self.error_output, axis=0) 
-            self.output_weights[0] -= self.eta * self.output_weights_gradient[0] 
+            self.output_weights[0] = self.output_weights[0] - self.eta * self.output_weights_gradient[0] 
             self.output_bias[0] -= self.eta * self.output_bias_gradient[0]  
             
             for k in reversed(range(len(self.n_hidden_neurons))):
                 
                 #if the NN contains only one hidden layer
                 if len(self.n_hidden_neurons)==1:
-                    self.error_hidden = np.matmul(self.error_output, self.output_weights[0].T) * relu_grad(self.z_h[0]) 
+                    self.error_hidden = np.matmul(self.error_output, self.output_weights[0].T) * leakyrelu_grad(self.z_h[0]) 
                     self.hidden_weights_gradient[0] = np.matmul(self.X_data.T, self.error_hidden)
                     ####
                     if self.lmbd > 0.0: 
@@ -161,15 +166,15 @@ class NeuralNetwork:
                 
                 #if L>1
                 if k==len(self.n_hidden_neurons)-1:        
-                    self.error_hidden = np.matmul(self.error_output, self.output_weights[-1].T) * relu_grad(self.z_h[k]) 
+                    self.error_hidden = np.matmul(self.error_output, self.output_weights[-1].T) * leakyrelu_grad(self.z_h[k]) #OBS! derivative of the sigmoid function
                     self.hidden_weights_gradient[k] = np.matmul(self.a_h[k-1].T,self.error_hidden)
                           
                 if k!=0 and k!= len(self.n_hidden_neurons)-1:       
-                    self.error_hidden = np.matmul(self.error_output, self.hidden_weights[k+1].T) * relu_grad(self.z_h[k])
+                    self.error_hidden = np.matmul(self.error_output, self.hidden_weights[k+1].T) * leakyrelu_grad(self.z_h[k])
                     self.hidden_weights_gradient[k] = np.matmul(self.a_h[k-1].T,self.error_hidden)
                      
                 if k==0:     
-                    self.error_hidden = np.matmul(self.error_output, self.hidden_weights[k+1].T) * relu_grad(self.z_h[k])
+                    self.error_hidden = np.matmul(self.error_output, self.hidden_weights[k+1].T) * leakyrelu_grad(self.z_h[k])
                     self.hidden_weights_gradient[k] = np.matmul(self.X_data.T, self.error_hidden)
                 ####
                 if self.lmbd > 0.0: 
@@ -183,10 +188,13 @@ class NeuralNetwork:
                          
 
 
-    def predict(self,X):
-        output = self.feed_forward_out(X)
-        return output
+    def predict(self, X):
+        probabilities = self.feed_forward_out(X)        
+        return np.argmax(probabilities, axis=1)
     
+    def predict2(self, X):
+        probabilities = self.feed_forward_out(X)        
+        return np.where(probabilities>0.5, 1,0)
 
     def predict_probabilities(self, X):
         probabilities = self.feed_forward_out(X)

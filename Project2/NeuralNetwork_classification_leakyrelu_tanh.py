@@ -7,29 +7,25 @@ Created on Tue Oct 18 12:02:03 2022
 """
 import numpy as np
 
-def create_mini_batches(X, y, batch_size):
-    mini_batches = []
-    data = np.hstack((X, y))
-    np.random.shuffle(data)
-    n_minibatches = data.shape[0] // batch_size
-    i = 0
- 
-    for i in range(n_minibatches + 1):
-        mini_batch = data[i * batch_size:(i + 1)*batch_size, :]
-        X_mini = mini_batch[:, :-1]
-        Y_mini = mini_batch[:, -1].reshape((-1, 1))
-        mini_batches.append((X_mini, Y_mini))
-    if data.shape[0] % batch_size != 0:
-        mini_batch = data[i * batch_size:data.shape[0]]
-        X_mini = mini_batch[:, :-1]
-        Y_mini = mini_batch[:, -1].reshape((-1, 1))
-        mini_batches.append((X_mini, Y_mini))
-    return mini_batches
+def accuracy_score_numpy(Y_test, Y_pred):
+    return np.sum(Y_test == Y_pred) / len(Y_test)
 
+def softmax_stable(x):
+    exp = np.exp(x) - np.exp(max(x))
+    return exp / np.sum(exp)
 
 def leakyrelu(X):
     alpha = 0.01
     return np.maximum(alpha*X,X)
+
+def sigmoid(X):
+    if X.all()>=0:
+        z = np.exp(-X)
+        return 1. / (1. +z)
+    else:
+        z = np.exp(X)
+        return z / (1. + z)
+
 
 def leakyrelu_grad(X):
     alpha = 0.01
@@ -107,8 +103,11 @@ class NeuralNetwork:
             self.X_curr = self.a_h[i]
         
         self.z_o = np.matmul(self.a_h[-1], self.output_weights[0]) + self.output_bias[0]
+       
         #self.a_o = sigmoid(self.z_o)
-        self.a_o = self.z_o #For regression problem, the output activation function is the identity function
+        self.a_o = np.tanh(self.z_o)
+        #self.a_o = softmax_stable(self.z_o)
+        #self.a_o = self.z_o #For regression problem, the output activation function is the identity function
         return self.a_o
 
     def feed_forward(self):
@@ -120,12 +119,16 @@ class NeuralNetwork:
           
             self.X_prev = self.X_curr
             self.z_h[i] = np.matmul(self.X_prev, self.hidden_weights[i]) + self.hidden_bias[i]
+            #print(self.hidden_weights[i])
             self.a_h[i] = leakyrelu(self.z_h[i]) 
             self.X_curr = self.a_h[i]
         
         self.z_o = np.matmul(self.a_h[-1], self.output_weights[0]) + self.output_bias[0]
-        #a_o = sigmoid(z_o)
-        self.a_o = self.z_o 
+        
+        #self.a_o = softmax_stable(self.z_o)
+        #self.a_o = sigmoid(self.z_o)
+        self.a_o = np.tanh(self.z_o)
+        #self.a_o = self.z_o 
               
 
     def backpropagation(self): 
@@ -143,7 +146,7 @@ class NeuralNetwork:
                 self.output_weights_gradient += self.lmbd * self.output_weights[0]
             
             self.output_bias_gradient = np.sum(self.error_output, axis=0) 
-            self.output_weights[0] -= self.eta * self.output_weights_gradient[0] 
+            self.output_weights[0] = self.output_weights[0] - self.eta * self.output_weights_gradient[0] 
             self.output_bias[0] -= self.eta * self.output_bias_gradient[0]  
             
             for k in reversed(range(len(self.n_hidden_neurons))):
@@ -185,10 +188,13 @@ class NeuralNetwork:
                          
 
 
-    def predict(self,X):
-        output = self.feed_forward_out(X)
-        return output
+    def predict(self, X):
+        probabilities = self.feed_forward_out(X)        
+        return np.argmax(probabilities, axis=1)
     
+    def predict2(self, X):
+        probabilities = self.feed_forward_out(X)        
+        return np.where(probabilities>0.5, 1,0)
 
     def predict_probabilities(self, X):
         probabilities = self.feed_forward_out(X)
