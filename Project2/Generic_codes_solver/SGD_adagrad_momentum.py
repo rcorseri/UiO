@@ -15,8 +15,8 @@ from sklearn.pipeline import Pipeline
 
 
 #Create data
-#np.random.seed(2003)
-n = 1000
+np.random.seed(2003)
+n = 100
 maxdegree = 2
 
 x = np.random.uniform(0,1,n)
@@ -39,14 +39,14 @@ X = DesignMatrix(x1[:,0],x1[:,1],maxdegree)
 ##
 
 #OLS using stochastic gradient descent
-M = 200   #size of each minibatch
+M = 20   #size of each minibatch
 m = int(z.shape[0]/M) #number of minibatches
-n_epochs = 1500 #number of epochs
+n_epochs = 15000 #number of epochs
 
 #Set up adagrad
 beta = np.random.randn(X.shape[1],1)
-eta = 0.001
-delta = 10**-7
+eta = 0.00005
+delta = 10**-8
 j = 0
 err=[]
 
@@ -66,6 +66,7 @@ for epoch in range(1,n_epochs+1):
         
         #Simpler algorithm with only diagonal elements
         Ginverse = np.c_[eta/(delta+np.sqrt(np.diagonal(Giter)))]
+        #Ginverse = np.c_[eta/(delta+np.sqrt(Giter))]
         
         # compute update
         new_change = np.multiply(Ginverse,gradients) + delta_momentum*change        
@@ -78,7 +79,13 @@ for epoch in range(1,n_epochs+1):
     
     
 plt.yscale('log')
-plt.plot(err)
+plt.xlabel('Epochs')
+plt.ylabel('Mean squared error')
+plt.xlim((-10,15000))
+plt.ylim((10**-12,10**1))
+plt.plot(err,"r-")
+plt.savefig("../Results/Solver/SGD_ADAGRAD_momentum.png",dpi=150)
+plt.show()
   
 print("Beta with adagrad SGD")
 print(beta.T)

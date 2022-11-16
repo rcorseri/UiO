@@ -11,7 +11,7 @@ from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.pipeline import Pipeline
 
 #Create data
-#np.random.seed(2003)
+np.random.seed(2003)
 n = 100
 maxdegree = 2
 
@@ -92,17 +92,17 @@ print("R2  =",R2(z_test,z_pred))
 #OLS With adagra gradient descent
 
 beta = np.random.randn(X_train.shape[1],1)
-eta = 0.1
+eta = 0.01
 eps = [1]
 err = []
 i=0
 
-delta = 10**-7
+delta = 10**-8
 j = 0
 err=[]
 Giter = np.zeros(shape=(X_train.shape[1],X_train.shape[1]))
 
-while(eps[-1] >= 10**(-8)) :
+while(eps[-1] >= 10**(-2)) :
     d = z_train.shape[0] 
     z_train = np.reshape(z_train,(d,1))
     gradients = (2.0/d)*X_train.T @ (X_train @ beta - z_train)
@@ -121,9 +121,14 @@ while(eps[-1] >= 10**(-8)) :
     i+=1
    
     
-print(f'\n number of iteration: {i}')
-plt.plot(err)
-
+plt.yscale('log')
+plt.xlabel('Iterations')
+plt.ylabel('Mean squared error')
+plt.ylim((10**-7,10**1))
+plt.plot(err,"r-")
+plt.savefig("../Results/Solver/GD_ADAGRAD.png",dpi=150)
+plt.show()
+  
 beta = np.reshape(beta,(beta.shape[0],))
 z_train = np.reshape(z_train,(d,))
 

@@ -17,9 +17,9 @@ import seaborn as sns
  
 
 #Create data
-#np.random.seed(2003)
+np.random.seed(2003)
 n = 100
-maxdegree = 3
+maxdegree = 4
 
 x = np.random.uniform(0,1,n)
 y = np.random.uniform(0,1,n)
@@ -116,13 +116,13 @@ y_axis = lambdas # labels for y-axis
 #heat1 = sns.heatmap(err_train,vmin=0.002,vmax=10,annot=True, fmt=".1e",linewidths =0.5, norm = LogNorm() )
 heat1 = sns.heatmap(err_train,vmin=0.009,vmax=10,annot=True, xticklabels=x_axis, yticklabels=y_axis, cmap="viridis",linewidths =0.5, norm = LogNorm() )
 heat1.set(xlabel='learning rate', ylabel ='regularization', title = f"Training error - Ridge regression deg={maxdegree}\nSGD/RADAGRAD/momentum")
-plt.savefig(f"Results/Ridge/ADAGRAD/RidgeReg_degree{maxdegree}_train_error.png", dpi=150)
+plt.savefig(f"Results/Ridge/ADAGRAD/RidgeReg_adagrad_degree{maxdegree}_train_error.png", dpi=150)
 plt.show()
 
 #heat2 = sns.heatmap(err_test,vmin=0.002,vmax=10,annot=True, fmt=".1e",linewidths =0.5, norm = LogNorm() )
 heat2 = sns.heatmap(err_test,vmin=0.009,vmax=10,annot=True, xticklabels=x_axis, yticklabels=y_axis, cmap="viridis",linewidths =0.5, norm = LogNorm() )
 heat2.set(xlabel='learning rate', ylabel ='regularization', title = f"Test error - Ridge regression deg={maxdegree}\nSGD/ADAGRAD/momentum")
-plt.savefig(f"Results/Ridge/ADAGRAD/RidgeReg_degree{maxdegree}_test_error.png", dpi=150)
+plt.savefig(f"Results/Ridge/ADAGRAD/RidgeReg_adagrad_degree{maxdegree}_test_error.png", dpi=150)
 plt.show()
 
 

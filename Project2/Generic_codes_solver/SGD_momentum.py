@@ -15,18 +15,18 @@ from sklearn.pipeline import Pipeline
 
 
 #Create data
-#np.random.seed(2003)
+np.random.seed(2003)
 n = 100
-maxdegree = 4
+maxdegree =2
 
 x = np.random.uniform(0,1,n)
 y = np.random.uniform(0,1,n)
-z = FrankeFunction(x, y)
-#z = 1 + x + y + x*y + x**2 + y**2
+#z = FrankeFunction(x, y)
+z = 1 + x + y + x*y + x**2 + y**2
 
 # Add random distributed noise
-var = 0.0001
-z = z + np.random.normal(0,var,z.shape)
+#var = 0.0001
+#z = z + np.random.normal(0,var,z.shape)
 
 
 x = np.array(x).reshape(n,1)
@@ -37,13 +37,13 @@ z = np.reshape(z,(z.shape[0],1))
 X = DesignMatrix(x1[:,0],x1[:,1],maxdegree)
 
 #OLS With gradient descent
-M = 10   #size of each minibatch
+M = 20   #size of each minibatch
 m = int(z.shape[0]/M) #number of minibatches
-n_epochs = 500 #number of epochs
+n_epochs = 20000 #number of epochs
 
 #Initialize beta randomly
 beta = np.random.randn(X.shape[1],1)
-eta = 0.1
+eta = 0.01
 j = 0
 err = []
 
@@ -68,7 +68,14 @@ for epoch in range(1,n_epochs+1):
        
     err = np.append(err,MSE(z,X @ beta))
     
-plt.plot(err)
+plt.yscale('log')
+plt.xlabel('epochs')
+plt.ylabel('Mean squared error')
+plt.ylim((10**-12,10**1))
+plt.xlim((-0.9,30000))
+plt.plot(err,"r-")
+plt.savefig("../Results/Solver/SGD_momentum.png",dpi=150)
+plt.show()
  
 print("Beta with SGD with momentum")
 print(beta.T)

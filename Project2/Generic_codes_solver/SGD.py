@@ -15,7 +15,7 @@ from sklearn.pipeline import Pipeline
 
 
 #Create data
-#np.random.seed(2003)
+np.random.seed(2003)
 n = 100
 maxdegree = 2
 
@@ -39,7 +39,7 @@ X = DesignMatrix(x1[:,0],x1[:,1],maxdegree)
 #OLS With gradient descent
 M = 20   #size of each minibatch
 m = int(z.shape[0]/M) #number of minibatches
-n_epochs = 8000 #number of epochs
+n_epochs = 30000 #number of epochs
 
 
 beta = np.random.randn(X.shape[1],1)
@@ -57,8 +57,14 @@ for epoch in range(1,n_epochs+1):
     err = np.append(err,MSE(z,X @ beta))
     
 
-
-plt.plot(err)
+plt.yscale('log')
+plt.xlabel('epochs')
+plt.ylabel('Mean squared error')
+plt.ylim((10**-12,10**1))
+plt.xlim((-0.9,30000))
+plt.plot(err,"b-")
+plt.savefig("../Results/Solver/SGD.png",dpi=150)
+plt.show()
  
 print("Beta with SGD")
 print(beta.T)

@@ -15,8 +15,8 @@ from sklearn.pipeline import Pipeline
 
 
 #Create data
-#np.random.seed(2003)
-n = 1000
+np.random.seed(2003)
+n = 100
 maxdegree = 2
 
 x = np.random.uniform(0,1,n)
@@ -39,18 +39,18 @@ X = DesignMatrix(x1[:,0],x1[:,1],maxdegree)
 ##
 
 #OLS using stochastic gradient descent
-M = 200   #size of each minibatch
+M = 20   #size of each minibatch
 m = int(z.shape[0]/M) #number of minibatches
-n_epochs = 1500 #number of epochs
+n_epochs = 15000 #number of epochs
 
 #Set up RMSprop
 beta = np.random.randn(X.shape[1],1)
-eta = 0.001
+eta = 0.00006
 # Value for parameter rho
 rho = 0.99
 rho2 = 0.9
 
-delta = 10**-7
+delta = 10**-8
 j = 0
 err=[]
 
@@ -93,9 +93,14 @@ for epoch in range(1,n_epochs+1):
     err=np.append(err,MSE(z,X @ beta))
         
     
-    
 plt.yscale('log')
-plt.plot(err)
+plt.xlabel('Epochs')
+plt.ylabel('Mean squared error')
+plt.plot(err,"b-")
+plt.xlim((-10,15000))
+plt.ylim((10**-12,10**1))
+plt.savefig("../Results/Solver/SGD_ADAM_momentum.png",dpi=150)
+plt.show()
   
 print("Beta with ADAM momentum SGD")
 print(beta.T)

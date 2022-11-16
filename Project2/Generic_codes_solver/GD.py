@@ -11,7 +11,7 @@ from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.pipeline import Pipeline
 
 #Create data
-#np.random.seed(2003)
+np.random.seed(2003)
 n = 100
 maxdegree = 2
 
@@ -58,17 +58,15 @@ z_fit, z_pred, betas = LinReg(X_train, X_test, z_train)
 
 
 
-print("Beta from matrice inversion")
+print("Beta from matrix inversion")
 print(betas)
 
 print("Training error")
 print("MSE =",MSE(z_train,z_fit))
 print("R2 =",R2(z_train,z_fit))
     
-print("Testing error")
-  
-print("MSE =",MSE(z_test,z_pred))
-    
+print("Testing error") 
+print("MSE =",MSE(z_test,z_pred))  
 print("R2  =",R2(z_test,z_pred))
 
 
@@ -108,7 +106,7 @@ eps = [1]
 err = []
 i=0
 
-while(eps[-1] >= 10**(-4)) :
+while(eps[-1] >= 10**(-6)) :
     d = z_train.shape[0] 
     z_train = np.reshape(z_train,(d,1))
     gradient = (2.0/d)*X_train.T @ (X_train @ beta - z_train)
@@ -118,7 +116,15 @@ while(eps[-1] >= 10**(-4)) :
     i+=1
 print('\n number of iteration')
 print(i)  
-plt.plot(err)
+
+plt.yscale('log')
+plt.xlabel('iterations')
+plt.ylabel('Mean squared error')
+plt.ylim((10**-12,10**1))
+plt.xlim((-0.9,150000))
+plt.plot(err,"b-")
+plt.savefig("../Results/Solver/PlainGD.png",dpi=150)
+plt.show()
 
 beta = np.reshape(beta,(beta.shape[0],))
 z_train = np.reshape(z_train,(d,))

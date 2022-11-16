@@ -93,14 +93,14 @@ x_train,x_test,z_train,z_test=splitter(X,y,test_size=0.8)   #Split datasets into
 #z_test_onehot=to_categorical_numpy(z_test)
 
 del temp1,temp2,temp
-
-M = 100   #size of each minibatch
+print(x_train.shape[0])
+M = 10   #size of each minibatch
 m = int(z_train.shape[0]/M) #number of minibatches
 epochs = 1000 #number of epochs 
 
 etas = np.logspace(-4, -1, 4)
 lambdas = np.logspace(-5,2, 8)
-n_hidden_neurons = [10]
+n_hidden_neurons = [4,4,4]
 n_categories = 1
 n_features = x_train.shape[1]
 n_inputs = x_train.shape[0]
@@ -159,13 +159,13 @@ y_axis = lambdas # labels for y-axis
 
 heat1 = sns.heatmap(NN_err_train,vmin=0.009,vmax=1,annot=True, xticklabels=x_axis, yticklabels=y_axis, cmap="viridis",linewidths =0.5)
 heat1.set(xlabel='learning rate', ylabel ='regularization', title = f"Accuracy score training set (Act:leakyReLU-sigmoid)")
-plt.savefig(f"Results/NN/BreastCancer_sigmoid_accuracy_score_train.png", dpi=150)
+plt.savefig(f"Results/NN/BreastCancer_ReLUsig_accuracy_score_train.png", dpi=150)
 plt.show()
 
 
 heat2 = sns.heatmap(NN_err_test,vmin=0.009,vmax=1,annot=True, xticklabels=x_axis, yticklabels=y_axis, cmap="viridis",linewidths =0.5)
 heat2.set(xlabel='learning rate', ylabel ='regularization', title = f"Accuracy score test set (Act:leakyReLU-sigmoid)")
-plt.savefig(f"Results/NN/BreastCancer_sigmoid_accuracy_score_test.png", dpi=150)
+plt.savefig(f"Results/NN/BreastCancer_ReLUsig_accuracy_score_test.png", dpi=150)
 plt.show()
 
 

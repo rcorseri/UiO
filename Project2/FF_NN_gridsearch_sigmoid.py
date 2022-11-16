@@ -20,7 +20,7 @@ from sklearn.neural_network import MLPRegressor
 #from tf.keras.optimizers import Adagrad
  
 #Create data
-#np.random.seed(2003)
+np.random.seed(2003)
 n = 100
 
 x = np.random.uniform(0,1,n)
@@ -46,15 +46,16 @@ z = np.reshape(z_train,(z_train.shape[0],1))
 z_test = np.reshape(z_test,(z_test.shape[0],1))
 
 
-M = 10   #size of each minibatch
+M = 20   #size of each minibatch
 m = int(z.shape[0]/M) #number of minibatches
-epochs = 1000 #number of epochs 
+epochs = 10000 #number of epochs 
 #eta = 0.001
 #lmbd = 0.00001
 
 etas = np.logspace(-5, -1, 5)
 lambdas = np.logspace(-5, 2, 8)
-n_hidden_neurons = [10,10,10]
+n_hidden_neurons = [100]
+
 n_categories = 1
 n_features = x_train.shape[1]
 n_inputs = x_train.shape[0]

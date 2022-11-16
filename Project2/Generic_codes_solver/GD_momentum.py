@@ -11,7 +11,7 @@ from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.pipeline import Pipeline
 
 #Create data
-#np.random.seed(2003)
+np.random.seed(2003)
 n = 100
 maxdegree = 2
 
@@ -103,7 +103,7 @@ print("R2  =",R2(z_test,z_pred))
 #OLS using gradient descent with momentum
 
 beta = np.random.randn(X_train.shape[1],1)
-eta = 0.1
+eta = 0.01
 eps = [1]
 err = []
 i=0
@@ -113,7 +113,7 @@ change = 0.0
 delta_momentum = 0.3
 
 
-while(eps[-1] >= 10**(-8)) :
+while(eps[-1] >= 10**(-6)) :
     d = z_train.shape[0] 
     z_train = np.reshape(z_train,(d,1))
     gradient = (2.0/d)*X_train.T @ (X_train @ beta - z_train)
@@ -130,7 +130,15 @@ while(eps[-1] >= 10**(-8)) :
     i+=1
 print('\n number of iteration')
 print(i)  
-plt.plot(err)
+
+plt.yscale('log')
+plt.xlabel('iterations')
+plt.ylabel('Mean squared error')
+plt.ylim((10**-12,10**1))
+plt.xlim((-0.9,150000))
+plt.plot(err,"r-")
+plt.savefig("../Results/Solver/PlainGD_momentum_max.png",dpi=150)
+plt.show()
 
 beta = np.reshape(beta,(beta.shape[0],))
 z_train = np.reshape(z_train,(d,))
