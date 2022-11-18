@@ -24,7 +24,7 @@ The code run a linear and Ridge regression using gradient descent as iterative s
 
 The scripts produces a grid search plot located in Results/OLS (for linear regression) or Results/Ridge (for Ridge regression)
 
-## Neural Networka  and activation functions
+## Neural Network and activation functions
 
 ### Class definition:
 
