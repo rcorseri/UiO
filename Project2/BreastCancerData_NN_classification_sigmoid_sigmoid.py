@@ -72,25 +72,18 @@ plt.show()
 #Select features relevant to classification (texture,perimeter,compactness and symmetery) 
 #and add to input matrix
 
-#temp1=np.reshape(x[:,1],(len(x[:,1]),1))
 temp1=np.reshape((x[:,1]-np.mean(x[:,1]))/np.std(x[:,1]),(len(x[:,1]),1))
-
-#temp2=np.reshape(x[:,2],(len(x[:,2]),1))
 temp2=np.reshape((x[:,2]-np.mean(x[:,2]))/np.std(x[:,2]),(len(x[:,2]),1))
 
 X=np.hstack((temp1,temp2))      
-#temp=np.reshape(x[:,5],(len(x[:,5]),1))
 temp=np.reshape((x[:,5]-np.mean(x[:,5]))/np.std(x[:,5]),(len(x[:,5]),1))
 
 X=np.hstack((X,temp))       
-#temp=np.reshape(x[:,8],(len(x[:,8]),1))
 temp=np.reshape((x[:,8]-np.mean(x[:,8]))/np.std(x[:,8]),(len(x[:,8]),1))
 X=np.hstack((X,temp))       
 
 x_train,x_test,z_train,z_test=splitter(X,y,test_size=0.8)   #Split datasets into training and testing
 
-#z_train_onehot=to_categorical_numpy(z_train)     #Convert labels to categorical when using categorical cross entropy
-#z_test_onehot=to_categorical_numpy(z_test)
 
 del temp1,temp2,temp
 
@@ -111,12 +104,11 @@ NN_err_test=np.zeros(shape=(lambdas.shape[0],etas.shape[0]))
 DNN_scikit_train = np.zeros(shape=(lambdas.shape[0],etas.shape[0]))
 DNN_scikit_test = np.zeros(shape=(lambdas.shape[0],etas.shape[0]))
 
-#
-
 z_train = np.reshape(z_train, (z_train.shape[0],1))
 z_train_ravel = np.ravel(z_train)
 z_test_ravel = np.ravel(z_test)
 
+#Looping through regularization and learning rates
 i=0
 for lmbd in lambdas:
     j=0  
