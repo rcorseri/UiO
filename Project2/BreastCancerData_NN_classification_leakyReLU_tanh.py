@@ -72,18 +72,15 @@ plt.show()
 #Select features relevant to classification (texture,perimeter,compactness and symmetery) 
 #and add to input matrix
 
-#temp1=np.reshape(x[:,1],(len(x[:,1]),1))
-temp1=np.reshape((x[:,1]-np.mean(x[:,1]))/np.std(x[:,1]),(len(x[:,1]),1))
+#Reshape and scale the input
 
-#temp2=np.reshape(x[:,2],(len(x[:,2]),1))
+temp1=np.reshape((x[:,1]-np.mean(x[:,1]))/np.std(x[:,1]),(len(x[:,1]),1))
 temp2=np.reshape((x[:,2]-np.mean(x[:,2]))/np.std(x[:,2]),(len(x[:,2]),1))
 
 X=np.hstack((temp1,temp2))      
-#temp=np.reshape(x[:,5],(len(x[:,5]),1))
 temp=np.reshape((x[:,5]-np.mean(x[:,5]))/np.std(x[:,5]),(len(x[:,5]),1))
 
 X=np.hstack((X,temp))       
-#temp=np.reshape(x[:,8],(len(x[:,8]),1))
 temp=np.reshape((x[:,8]-np.mean(x[:,8]))/np.std(x[:,8]),(len(x[:,8]),1))
 X=np.hstack((X,temp))       
 
