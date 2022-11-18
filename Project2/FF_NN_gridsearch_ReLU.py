@@ -2,10 +2,8 @@ import matplotlib.pyplot as plt
 from  matplotlib.colors import LogNorm
 import numpy as np
 from sklearn.model_selection import train_test_split
-#from sklearn.preprocessing import StandardScaler
 from Functions import Beta_std, FrankeFunction, R2, MSE, DesignMatrix, LinReg
 from sklearn.metrics import mean_squared_error, r2_score
-#from Minibatch import create_mini_batches
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
@@ -15,9 +13,6 @@ from NeuralNetwork_regression_relu import NeuralNetwork, relu, relu_grad, create
 from sklearn.neural_network import MLPRegressor
 
 
-
-
-#from tf.keras.optimizers import Adagrad
  
 #Create data
 np.random.seed(2003)
@@ -26,7 +21,6 @@ n = 100
 x = np.random.uniform(0,1,n)
 y = np.random.uniform(0,1,n)
 z = FrankeFunction(x, y)
-#z = 1 + x + y + x*y + x**2 + y**2
 
 # Add random distributed noise
 var = 0.1
@@ -49,8 +43,6 @@ z_test = np.reshape(z_test,(z_test.shape[0],1))
 M = 20   #size of each minibatch
 m = int(z.shape[0]/M) #number of minibatches
 epochs = 10000 #number of epochs 
-#eta = 0.001
-#lmbd = 0.00001
 
 etas = np.logspace(-5, -1, 5)
 lambdas = np.logspace(-5, 2, 8)
@@ -68,6 +60,8 @@ DNN_scikit_test = np.zeros(shape=(lambdas.shape[0],etas.shape[0]))
 z_train_ravel = np.ravel(z_train)
 z_test_ravel = np.ravel(z_test)
 
+
+#Looping through regularization and hyperparameters
 i=0
 for lmbd in lambdas:
     j=0  
