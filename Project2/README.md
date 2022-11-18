@@ -1,5 +1,5 @@
 # Repository for delivery of project 2 FYS-STK4155
-Authors: Jose Luis Barreiro Tome - Romain Corseri
+### Authors: Jose Luis Barreiro Tome - Romain Corseri
 
 
 The repository is composed of:
