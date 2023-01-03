@@ -1,0 +1,9 @@
+# FYS-STK-4155-Project3-Shale-Brittleness-Network
+Owen Huff, Romain Corseri, and Ilya Berezin
+
+Report is located in the "report" folder,and code is located in the "code" folder. There are 3 Jupyter Notebooks that should be run in numerical order to reproduce the results: 1_sythetic_data_generation.ipynb, 2_model_training_and_testing.ipynb, and 3_field_data_test.ipynb. Arrays such as wavelet.npy, real_2d_seismic_Draupne.npy, and synth_example_for_field_compare.npy are necessary for running some of the code (especially the wavelet and real seismic as they were loaded and converted to .npy from different geophysical data formats). We also save the FFNN and CNN models as .h5 files.
+
+There is also a folder called "extra_problem" where we have the code for doing the extra credit problem. The results of this are presented as an appendix in our report.
+
+ABSTRACT
+In this project we develop machine learning models that can predict shale brittleness from 1-dimensional seismic data. We first build a mineralogical model for shales that can be used to generate densities and seismic velocities for a given shale clay content. Then we generate synthetic seismograms by convolving the product of these densities and velocities with a source wavelet extracted from seismic data in the North Sea; these seismograms act as our training data. We also convert the clay content value for each synthetic to a brittleness value using an empirical mapping equation; these brittleness values act as our training labels. Three different models are trained: a random forest regressor, a feed forward neural network, and a convolutional neural network, and all reach similarly low values of error on the testing dataset, approximately 1.2e-4 for the mean squared error and 0.97 for the R2 value. We then use the trained CNN model to predict on real seismic data collected in the North Sea that images the Draupne Shale Formation. 
