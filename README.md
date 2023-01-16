@@ -1,11 +1,11 @@
 # FYS-STK4155 Machine Learning and Data Analysis
-This repository contains the python source code 
+This repository contains the python source code and reports for:
 
-## Project 1: Ordinary Least Square, Lasso regression 
-### Dataset: Franke Function and Topographic Data from Norway
+## Project 1: Ordinary Least Square, Lasso regression methods 
+ Datasets: Franke Function and Topographic Data from Norway
 
-## Project 2: Deep Learning: own implementation of Feed-Forward Neural Networks
-### Datasets: Franke Function and Wisconsion Breast Cancer Data
+## Project 2: Deep Learning methods: own implementation of Feed-Forward Neural Networks
+ Datasets: Wisconsion Breast Cancer data and Franke Function
 
-## Project 3: Convolutional Neural Network and Random Forest 
-### Datasets: Seismograms (Both synthetic and real from North Sea)
+## Project 3: Convolutional Neural Network, Random Forest, Bias-Variance analysis
+ Datasets: Seismograms (Both synthetic and from North Sea 2D seismic data)
